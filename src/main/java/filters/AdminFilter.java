@@ -32,6 +32,7 @@ public class AdminFilter implements Filter
 
         // create instance of a user
         User user = (User)session.getAttribute("user");
+        //storing user in a session can cause issues when a user logs in on a different device. Note to change this later if time permits
         // check if user is an admin or not
         if(user.getRole().getRoleId() == 1)
         {
