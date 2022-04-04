@@ -1,18 +1,15 @@
 package filters;
 
+import ca.sait.securitydemo12.models.User;
 import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author lisaj
+ * @author Lisa Jowett
  */
 public class AdminFilter implements Filter 
 {    
@@ -31,15 +28,21 @@ public class AdminFilter implements Filter
     {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httResponse = (HttpServletResponse) response;
+        HttpSession session = httpRequest.getSession();
 
-// check if user is an admin or not
-// if admin: 
-        chain.doFilter(request, response);
-//if not admin send:
-        httResponse.sendRedirect("/notes");
-
+        // create instance of a user
+        User user = (User)session.getAttribute("user");
+        // check if user is an admin or not
+        if(user.getRole().getRoleId() == 1)
+        {
+            chain.doFilter(request, response);
+        }
+        else
+        {
+        //if user is not an admin, send to notes
+            httResponse.sendRedirect("/notes");
+        }
     }
-
     /**
      * Destroy method for this filter
      */
@@ -50,8 +53,10 @@ public class AdminFilter implements Filter
 
     /**
      * Init method for this filter
+     * @param filterConfig
+     * @throws javax.servlet.ServletException
      */
-    public void init(FilterConfig filterConfig)
+    public void init(FilterConfig filterConfig) throws ServletException
     {        
         
     }
